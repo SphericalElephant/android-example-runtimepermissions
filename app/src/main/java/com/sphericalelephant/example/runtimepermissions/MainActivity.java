@@ -20,7 +20,13 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     private static final String[] REQUIRED_PERMISSIONS = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
     private static final int REQUEST_CODE = 1;
 
+    /**
+     * used to display information about the grant status of COARSE and FINE location
+     */
     private TextView infoText;
+    /**
+     * used to display the rationale behind granting access to COARSE and FINE location
+     */
     private TextView explain;
 
     @Override
@@ -30,10 +36,11 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         findViewById(R.id.activity_mainactivity_b_requestpermissions).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // check if permissions have been granted and ...
                 if (coarseLocationDenied() || fineLocationDenied()) {
-                    ActivityCompat.requestPermissions(MainActivity.this, REQUIRED_PERMISSIONS, REQUEST_CODE);
+                    ActivityCompat.requestPermissions(MainActivity.this, REQUIRED_PERMISSIONS, REQUEST_CODE); // ... request permissions if they've not been granted
                 } else {
-                    Toast.makeText(getApplicationContext(), R.string.activity_mainactivity_permissionsgranted, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.activity_mainactivity_permissionsgranted, Toast.LENGTH_SHORT).show(); // .. show an informative toast
                 }
             }
         });
@@ -55,12 +62,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        System.err.println("onActivityResult gets called: " + requestCode + " " + resultCode + " " + data);
-    }
-
-    @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == REQUEST_CODE) { // verify that we are dealing with the correct request
             StringBuilder text = new StringBuilder();
@@ -74,8 +75,10 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 text.append('\n');
             }
             infoText.setText(text);
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.ACCESS_FINE_LOCATION)
-                    || ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.ACCESS_COARSE_LOCATION)) {
+
+            // show info to the user if she / he declined to grant the permissions
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                    || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
                 explain.setText(R.string.activity_mainactivity_coarseandfine);
             } else {
                 explain.setText("");
