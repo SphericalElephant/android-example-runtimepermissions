@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * We are implementing ActivityCompat.OnRequestPermissionsResultCallback in order to be able to receive
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     private static final int REQUEST_CODE = 1;
 
     private TextView infoText;
+    private TextView explain;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -30,11 +32,14 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             public void onClick(View v) {
                 if (coarseLocationDenied() || fineLocationDenied()) {
                     ActivityCompat.requestPermissions(MainActivity.this, REQUIRED_PERMISSIONS, REQUEST_CODE);
+                } else {
+                    Toast.makeText(getApplicationContext(), R.string.activity_mainactivity_permissionsgranted, Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
         infoText = (TextView) findViewById(R.id.activity_mainactivity_tv_info);
+        explain = (TextView) findViewById(R.id.activity_mainactivity_tv_explain);
     }
 
     private boolean coarseLocationDenied() {
@@ -69,6 +74,12 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 text.append('\n');
             }
             infoText.setText(text);
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.ACCESS_FINE_LOCATION)
+                    || ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                explain.setText(R.string.activity_mainactivity_coarseandfine);
+            } else {
+                explain.setText("");
+            }
         }
     }
 }
